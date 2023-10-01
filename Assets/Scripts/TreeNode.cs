@@ -7,14 +7,13 @@ public class TreeNode
 
     Vector3 position;
     public Vector3 Position { get => position; set => position = value; }
-    public List<TreeBud> buds;
+    List<TreeBud> buds;
+    public List<TreeBud> Buds { get => buds; }
 
 
-    public TreeNode(Vector3 position, float phase) 
+    public TreeNode(Vector3 position) 
     {
         this.position = position;
-        this.phase = phase;
-
         this.buds = new List<TreeBud>();
     } 
 
