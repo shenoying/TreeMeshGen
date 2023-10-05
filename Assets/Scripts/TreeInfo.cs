@@ -14,25 +14,28 @@ public class TreeInfo
     float branchProb;
     public float BranchProb { get => branchProb; set => branchProb = value; }
 
-    float thickness;
-    public float Thickness { get => thickness; set => thickness = value; }
+    float height;
+    public float Height { get => height; set => height = value; }
     int detail;
-    public float Detail { get => detail;}
+    public int Detail { get => detail;}
     Color color;
     public Color Color { get => color; set => color = value; }
     int numSteps;
     public int NumSteps { get => numSteps; }
+    int maxDepth;
+    public int MaxDepth { get => maxDepth;}
 
     
-    public TreeInfo (float die, float pause, float branch, float thickness, int detail, Color color, int numSteps)
+    public TreeInfo (float die, float pause, float branch, float height, int detail, Color color, int numSteps, int maxDepth)
     {
         this.dieProb = die;
         this.pauseProb = pause;
         this.branchProb = branch;
-        this.thickness = thickness;
+        this.height = height;
         this.detail = detail;
         this.color = color;
         this.numSteps = numSteps;
+        this.maxDepth = maxDepth;
     }
 
     public void Resample() 

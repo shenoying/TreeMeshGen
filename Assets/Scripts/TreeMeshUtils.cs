@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class TreeMeshUtils 
 {
@@ -55,10 +58,53 @@ public class TreeMeshUtils
 
         return mesh;
     }
-
-    public static TreeMeshUtils CreateCRBranch()
+    
+    public static void RenderTree(TreeGrowth growth, TreeInfo info, GameObject parent)
     {
-        return null;
+        int i = 0;
+        foreach (TreeInternode internode in growth.Internodes)
+        {
+            Mesh m = CreateCylinder(internode.Start.Position, internode.End.Position, internode.Size, info.Detail);
+            GameObject go = new GameObject("Branch " + i);
+            go.AddComponent<MeshFilter>();
+            go.AddComponent<MeshRenderer>();
+            go.GetComponent<MeshFilter>().mesh = m;
+            Renderer rend = go.GetComponent<Renderer>();
+            rend.material.color = info.Color;
+            go.transform.parent = parent.transform;
+            i++;
+        }
+    }
+
+    public static void DebugTree(TreeGrowth growth)
+    {
+        GameObject sphereParent = new GameObject("SphereParent");
+        
+        foreach (TreeNode node in growth.Nodes)
+        {
+            GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            temp.transform.position = node.Position;
+            temp.transform.localScale = Vector3.one * 0.1f;
+            temp.transform.parent = sphereParent.transform;
+        }
+
+/**
+        foreach (TreeInternode internode in growth.Internodes)
+        {
+
+#if UNITY_EDITOR
+            Handles.color = Color.green;
+            if (internode.Start == null || internode.End == null) return;
+            Handles.DrawLine(internode.Start.Position, internode.End.Position, 0.01f);
+#endif
+        }
+**/
+
+    }
+
+    public static void CreateCRBranch()
+    {
+        return;
     }
 
     public static void AddTriangle(List<int> tris, int i1, int i2, int i3) 
@@ -72,6 +118,13 @@ public class TreeMeshUtils
     {
         AddTriangle(tris, i1, i2, i3);
         AddTriangle(tris, i1, i3, i4);
+    }
+
+    public static Vector3 MixTangent(Vector3 vector, Vector3 other)
+    {
+        float k = 0.10f;
+        Vector3 result = (vector.normalized + k * other.normalized).normalized;
+        return result;
     }
 
     ///TODO: rewrite to generate predictable orthogonal frames. 
