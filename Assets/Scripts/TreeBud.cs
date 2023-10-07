@@ -23,12 +23,12 @@ public class TreeBud
     public TreeBud(Vector3 tangent, Vector3 normal, Vector3 binormal, int order) 
     { 
         
-        this.alive = true;
-        this.tangent = tangent;
-        this.normal = normal;
-        this.binormal = binormal;
-        this.order = order;
-        this.age = 0;
+        this.alive      = true;
+        this.tangent    = tangent;
+        this.normal     = normal;
+        this.binormal   = binormal;
+        this.order      = order;
+        this.age        = 0;
     }
 
     public void IncrementAge()

@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
+
 
 public class TreeMeshUtils 
 {
@@ -87,18 +85,6 @@ public class TreeMeshUtils
             temp.transform.localScale = Vector3.one * 0.1f;
             temp.transform.parent = sphereParent.transform;
         }
-
-/**
-        foreach (TreeInternode internode in growth.Internodes)
-        {
-
-#if UNITY_EDITOR
-            Handles.color = Color.green;
-            if (internode.Start == null || internode.End == null) return;
-            Handles.DrawLine(internode.Start.Position, internode.End.Position, 0.01f);
-#endif
-        }
-**/
 
     }
 

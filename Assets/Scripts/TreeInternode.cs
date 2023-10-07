@@ -14,9 +14,9 @@ public class TreeInternode
 
     public TreeInternode(TreeNode start, TreeNode end, float size)
     {
-        this.start = start;
-        this.end = end;
-        this.size = size;
+        this.start  = start;
+        this.end    = end;
+        this.size   = size;
     }
 
 }

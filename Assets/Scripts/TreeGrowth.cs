@@ -10,12 +10,15 @@ public class TreeGrowth
     public List<TreeNode> Nodes { get => nodes; set => nodes = value; }
     List<TreeInternode> internodes;
     public List<TreeInternode> Internodes { get => internodes; set => internodes = value; }
+    List<TreeBranch> branches;
+    public List<TreeBranch> Branches { get => branches; set => branches = value; }
 
     public TreeGrowth(TreeInfo info)
     {
-        this.info = info;
-        this.nodes = new List<TreeNode>();
+        this.info       = info;
+        this.nodes      = new List<TreeNode>();
         this.internodes = new List<TreeInternode>();
+        this.branches   = new List<TreeBranch>();
     }
 
     public void Step()
@@ -31,18 +34,15 @@ public class TreeGrowth
                 if (Random.Range(0.0f, 1.0f) < info.DieProb && bud.Order > 3)
                 {
                     bud.Alive = false;
-                    // grow leaves here
                     node.Buds.Remove(bud);
-                    node.GrowLeaf();
+                    //node.GrowLeaf(node.Position, bud.Order, info);
                 }
                 else if (Random.Range(0.0f, 1.0f) > info.PauseProb)
                 {
-                    // create internode
-                    TreeInternode newInternode = node.CreateInternode(node, bud, info);
+                    // create internode and create tip node
+                    TreeInternode newInternode = node.CreateInternode(bud, info);
                     internodes.Add(newInternode);
                     nodes.Add(newInternode.End);
-                    // create tip node
-                    node.CreateTipNode(bud, info);
 
                     if (Random.Range(0.0f, 1.0f) < info.BranchProb)
                     {
@@ -53,6 +53,44 @@ public class TreeGrowth
             }
         }
     }
+
+    public void BranchStep()
+    {
+        List<TreeBranch> newBranches = new List<TreeBranch>();
+        for (int i = 0; i < branches.Count; i++) 
+        {
+            List<TreeNode> nodes = branches[i].Nodes;
+            for (int j = 0; j < nodes.Count; j++)
+            {
+                TreeNode node = nodes[j];
+                for (int k = 0; k < node.Buds.Count; k++) 
+                {
+                    TreeBud bud = node.Buds[j];
+                    if (!bud.Alive) continue;
+                    bud.IncrementAge();
+                    if (Random.Range(0.0f, 1.0f) < info.DieProb && bud.Order > 3)
+                    {
+                        bud.Alive = false;
+                        node.Buds.Remove(bud);
+                        //node.GrowLeaf(node.Position, bud.Order, info);
+                    }
+                    else if (Random.Range(0.0f, 1.0f) > info.PauseProb)
+                    {
+                        // create internode and create tip node
+                        TreeInternode newInternode = node.CreateInternode(bud, info);
+                        internodes.Add(newInternode);
+                        nodes.Add(newInternode.End);
+
+                        if (Random.Range(0.0f, 1.0f) < info.BranchProb)
+                        {
+                            // create side buds
+                            node.CreateSideBuds(bud, info);
+                        }
+                    }
+                }
+            }
+        }
+    } 
 
     public void Reset()
     {

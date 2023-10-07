@@ -12,13 +12,15 @@ public class TreeMeshGen : MonoBehaviour
     public float branchProb = 0.52f;
     [Range(0.0f, 1.0f)]
     public float pauseProb = 0.37f;
+    [Range(0.0f, 1.0f)]
+    public float orthoProb = 0.55f;
     public int detail = 8;
     public float height = 5.0f;
     public float stepSize = 1.5f;
     public int maxDepth = 7;
-    [Range(0, 15)]
-    public int numSteps = 50;
-
+    [Range(0, 50)]
+    public int numSteps = 25;
+    public List<TreeGrowth> growth = new List<TreeGrowth>();
 
     // Start is called before the first frame update
     void Start()
@@ -27,30 +29,14 @@ public class TreeMeshGen : MonoBehaviour
         Color color = TreeMeshUtils.GenerateRandomColor();
         ///TODO: add thickness param
         TreeInfo info = new TreeInfo (
-            dieProb, pauseProb, branchProb, height, detail, color, numSteps, maxDepth
+            dieProb, pauseProb, branchProb, orthoProb, height, detail, color, numSteps, maxDepth, stepSize, orthoProb
         );
 
         GameObject world = new GameObject("Trees");
-        
-        GameObject cylinder = new GameObject("test");
-        cylinder.AddComponent<MeshFilter>();
-        cylinder.AddComponent<MeshRenderer>();
 
-        cylinder.transform.parent = world.transform;
-        cylinder.GetComponent<MeshFilter>().mesh = 
-            TreeMeshUtils.CreateCylinder(
-                new Vector3(5.0f, 0.0f, 0.0f),
-                new Vector3(5.0f, 5.0f, 5.0f),
-                2.5f,
-                10
-            );
-
-        Renderer c_rend = cylinder.GetComponent<Renderer>();
-        c_rend.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-        for (int i = 0; i < 1; i++) 
+        for (int i = 0; i < 3; i++) 
         {
-            Vector3 l = new Vector3(i * 3.0f - 3.0f, 0.0f, i * 3.0f - 3.0f);
+            Vector3 l = new Vector3(i * 20.0f - 30.0f, 0.0f, i * 20.0f - 30.0f);
             CreateTree(l, world, info);
         }
     }
@@ -68,8 +54,8 @@ public class TreeMeshGen : MonoBehaviour
         TreeGrowth tg = new TreeGrowth(info);
         TreeBud bud = new TreeBud (
             new Vector3(0.0f, 1.0f, 0.0f),
-            new Vector3(0.0f, 0.0f, -1.0f),
-            new Vector3(-1.0f, 0.0f, 0.0f),
+            new Vector3(0.0f, 0.0f, 1.0f),
+            new Vector3(1.0f, 0.0f, 0.0f),
             0
         );
 
@@ -80,14 +66,15 @@ public class TreeMeshGen : MonoBehaviour
         
         tg.Nodes.Add(trunkNode);
         tg.Nodes.Add(apicalNode);
-        tg.Internodes.Add(new TreeInternode(trunkNode, apicalNode, 0.05f));
+        tg.Internodes.Add(new TreeInternode(trunkNode, apicalNode, 1.00f));
 
         tg.Grow(info);
+        growth.Add(tg);
 
         TreeMeshUtils.RenderTree(tg, info, tree);
-        TreeMeshUtils.DebugTree(tg);
+        //TreeMeshUtils.DebugTree(tg);
         
-        Debug.Log("Nodes: " + tg.Nodes.Count + ", Internodes: " + tg.Internodes.Count);
+        //Debug.Log("Nodes: " + tg.Nodes.Count + ", Internodes: " + tg.Internodes.Count);
 
         info.Resample();
     }
