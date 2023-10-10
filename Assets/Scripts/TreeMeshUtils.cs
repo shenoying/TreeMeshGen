@@ -15,6 +15,8 @@ public class TreeMeshUtils
 
         Vector3 axis = (end - start).normalized;
 
+        ///TODO: experiment with fixed vector cross
+        ///products to generate smooth joins
         Vector3 cross = NonZeroCrossProduct(axis);
 
         Vector3 u = Vector3.Cross(axis, cross).normalized;

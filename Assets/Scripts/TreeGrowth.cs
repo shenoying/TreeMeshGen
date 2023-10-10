@@ -59,13 +59,14 @@ public class TreeGrowth
         List<TreeBranch> newBranches = new List<TreeBranch>();
         for (int i = 0; i < branches.Count; i++) 
         {
-            List<TreeNode> nodes = branches[i].Nodes;
+            TreeBranch branch = branches[i];
+            List<TreeNode> nodes = branch.Nodes;
             for (int j = 0; j < nodes.Count; j++)
             {
                 TreeNode node = nodes[j];
                 for (int k = 0; k < node.Buds.Count; k++) 
                 {
-                    TreeBud bud = node.Buds[j];
+                    TreeBud bud = node.Buds[k];
                     if (!bud.Alive) continue;
                     bud.IncrementAge();
                     if (Random.Range(0.0f, 1.0f) < info.DieProb && bud.Order > 3)
@@ -78,17 +79,28 @@ public class TreeGrowth
                     {
                         // create internode and create tip node
                         TreeInternode newInternode = node.CreateInternode(bud, info);
+                        branch.Nodes.Add(newInternode.End);
                         internodes.Add(newInternode);
                         nodes.Add(newInternode.End);
 
-                        if (Random.Range(0.0f, 1.0f) < info.BranchProb)
+                        if (Random.Range(0.0f, 1.0f) < info.BranchProb && bud.Order <= info.MaxDepth)
                         {
                             // create side buds
                             node.CreateSideBuds(bud, info);
+                            //TreeBranch b = new TreeBranch(node);
+                            //omit 1 node branches
+                            //give nodes children references
+                            //do dfs with children nodes to draw
+                            //newBranches.Add(b);
                         }
                     }
                 }
             }
+        }
+
+        foreach (TreeBranch branch in newBranches)
+        {
+            branches.Add(branch);
         }
     } 
 
@@ -97,6 +109,7 @@ public class TreeGrowth
         info.Resample();
         this.nodes.Clear();
         this.internodes.Clear();
+        this.branches.Clear();
     }
 
     public void Grow(TreeInfo info)

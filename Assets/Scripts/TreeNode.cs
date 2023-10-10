@@ -23,8 +23,8 @@ public class TreeNode
         if (bud.Order + 1 > info.MaxDepth) return;
 
         Vector3 newT = (
-                (Quaternion.AngleAxis(Random.Range(-30.0f, 30.0f), bud.Binormal)) * 
-                (Quaternion.AngleAxis(Random.Range(-30.0f, 30.0f), bud.Normal) * bud.Tangent)
+                (Quaternion.AngleAxis(Random.Range(-45.0f, 45.0f), bud.Binormal)) * 
+                (Quaternion.AngleAxis(Random.Range(-45.0f, 45.0f), bud.Normal) * bud.Tangent)
             ).normalized;
         Vector3 newN = (bud.Normal * Mathf.Cos(30.0f * Mathf.Deg2Rad) + bud.Binormal * Mathf.Sin(30.0f  * Mathf.Deg2Rad)).normalized;
         Vector3 newB = Vector3.Cross(newT, newN);

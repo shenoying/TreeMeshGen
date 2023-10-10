@@ -36,7 +36,7 @@ public class TreeMeshGen : MonoBehaviour
 
         for (int i = 0; i < 3; i++) 
         {
-            Vector3 l = new Vector3(i * 20.0f - 30.0f, 0.0f, i * 20.0f - 30.0f);
+            Vector3 l = new Vector3(i * 20.0f - 20.0f, 0.0f, 40.0f);
             CreateTree(l, world, info);
         }
     }
@@ -63,9 +63,12 @@ public class TreeMeshGen : MonoBehaviour
         TreeNode apicalNode = new TreeNode(new Vector3(position.x, h, position.z));
         
         apicalNode.Buds.Add(bud);
+        TreeBranch b = new TreeBranch(trunkNode);
+        b.Nodes.Add(apicalNode);
         
         tg.Nodes.Add(trunkNode);
         tg.Nodes.Add(apicalNode);
+        tg.Branches.Add(b);
         tg.Internodes.Add(new TreeInternode(trunkNode, apicalNode, 1.00f));
 
         tg.Grow(info);
@@ -74,7 +77,7 @@ public class TreeMeshGen : MonoBehaviour
         TreeMeshUtils.RenderTree(tg, info, tree);
         //TreeMeshUtils.DebugTree(tg);
         
-        //Debug.Log("Nodes: " + tg.Nodes.Count + ", Internodes: " + tg.Internodes.Count);
+        Debug.Log("Nodes: " + tg.Nodes.Count + ", Internodes: " + tg.Internodes.Count + ", Branches: " + tg.Branches.Count);
 
         info.Resample();
     }

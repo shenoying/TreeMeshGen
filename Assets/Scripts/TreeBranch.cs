@@ -7,9 +7,11 @@ public class TreeBranch
     List<TreeNode> nodes;
     public List<TreeNode> Nodes { get => nodes; set => nodes = value; }
 
-    public TreeBranch()
+    public TreeBranch(TreeNode root)
     {
         nodes = new List<TreeNode>();
+        
+        nodes.Add(root);
     }
 
 }
