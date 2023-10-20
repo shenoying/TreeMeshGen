@@ -20,7 +20,7 @@ public class TreeMeshGen : MonoBehaviour
     public float thickness = 1.0f;
     public float stepSize = 1.5f;
     public int maxDepth = 7;
-    [Range(0, 50)]
+    [Range(0, 75)]
     public int numSteps = 25;
     public List<TreeGrowth> growth = new List<TreeGrowth>();
 
@@ -38,22 +38,27 @@ public class TreeMeshGen : MonoBehaviour
 
         for (int i = 0; i < 3; i++) 
         {
-            Vector3 l = new Vector3(i * 30.0f - 30.0f, 0.0f, 40.0f);
+            Vector3 l = new Vector3(i * 40.0f - 40.0f, 0.0f, 40.0f);
             CreateTree(l, world, info);
         }
     }
 
     public void CreateTree(Vector3 position, GameObject parent, TreeInfo info)
     {
+        info.Resample();
+
         GameObject tree = new GameObject("PCG Tree");
+        GameObject leaves = new GameObject("Leaf Parent");
+
         tree.AddComponent<MeshFilter>();
         tree.AddComponent<MeshRenderer>();
 
         tree.transform.parent = parent.transform;
+        leaves.transform.parent = tree.transform;
         
         float h = info.Height;
 
-        TreeGrowth tg = new TreeGrowth(info);
+        TreeGrowth tg = new TreeGrowth(info, leaves);
         TreeBud bud = new TreeBud (
             new Vector3(0.0f, 1.0f, 0.0f),
             new Vector3(0.0f, 0.0f, 1.0f),
@@ -74,13 +79,9 @@ public class TreeMeshGen : MonoBehaviour
         tg.Grow(info);
         growth.Add(tg);
 
-        //TreeMeshUtils.RenderTree(tg, info, tree);
         TreeMeshUtils.RenderTreeCR(tg, info, tree);
-        //TreeMeshUtils.DebugTree(tg);
         
         Debug.Log("Internodes: " + tg.Internodes.Count + ", Branches: " + tg.Branches.Count);
-
-        info.Resample();
     }
 
     // Update is called once per frame

@@ -10,13 +10,16 @@ public class TreeGrowth
     public List<TreeInternode> Internodes { get => internodes; set => internodes = value; }
     List<TreeBranch> branches;
     public List<TreeBranch> Branches { get => branches; set => branches = value; }
-    int maxDepth = 1;
+    GameObject leafParent;
+    public GameObject LeafParent { get => leafParent; }
 
-    public TreeGrowth(TreeInfo info)
+
+    public TreeGrowth(TreeInfo info, GameObject leafParent)
     {
         this.info       = info;
         this.internodes = new List<TreeInternode>();
         this.branches   = new List<TreeBranch>();
+        this.leafParent = leafParent;
     }
 
     public void Step()
@@ -40,7 +43,7 @@ public class TreeGrowth
                     {
                         bud.Alive = false;
                         node.Buds.Remove(bud);
-                        //node.GrowLeaf(node.Position, bud.Order, info);
+                        node.GrowLeaf(node.Position, bud.Order, info, this.leafParent);
                     }
                     else if (Random.Range(0.0f, 1.0f) > info.PauseProb)
                     {
@@ -53,8 +56,7 @@ public class TreeGrowth
                         {
                             // create side buds
                             TreeBud sidebud = node.CreateSideBuds(bud, info);
-                            float rad = info.Thickness; //(info.Thickness) * ((nodeCount - j + 0.01f) / (nodeCount)) * ((info.MaxDepth - branch.Order + 0.01f) / (info.MaxDepth)); // * ((512.0f - node.Depth) / (512.0f));
-                            //((info.MaxDepth - branch.Order + 0.01f) / info.MaxDepth) * ((nodeCount - j + 0.1f) / nodeCount);
+                            float rad = info.Thickness;
                             if (sidebud != null) CreateSideBranch(node, sidebud, sidebud.Order, rad);
                         }
                     }

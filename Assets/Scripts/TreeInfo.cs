@@ -21,7 +21,7 @@ public class TreeInfo
     float thickness;
     public float Thickness { get => thickness; set => thickness = value; }
     int detail;
-    public int Detail { get => detail;}
+    public int Detail { get => detail; }
     Color color;
     public Color Color { get => color; set => color = value; }
     int numSteps;
@@ -32,6 +32,8 @@ public class TreeInfo
     public float StepSize { get => stepSize; } 
     bool branchesUp;
     public bool BranchesUp { get => branchesUp; }
+    Color leafColor;
+    public Color LeafColor { get => leafColor; }
     
     public TreeInfo (float die, float pause, float branch, float ortho, float height, float thickness, int detail, Color color, int numSteps, int maxDepth, float stepSize, float orthoProb)
     {
@@ -52,6 +54,7 @@ public class TreeInfo
     public void Resample() 
     {
         this.color = TreeMeshUtils.GenerateRandomColor();
+        this.leafColor = TreeMeshUtils.GenerateRandomColor();
         this.branchesUp = (Random.Range(0.0f, 1.0f) < orthoProb);
     }
 }

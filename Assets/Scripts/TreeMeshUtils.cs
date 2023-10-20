@@ -81,17 +81,24 @@ public class TreeMeshUtils
         int i = 0;
         foreach (TreeBranch branch in growth.Branches)
         {
-            if (branch.Nodes.Count == 1) continue;
-            float r = branch.Radius * ((info.MaxDepth - branch.Order + 0.01f) / (info.MaxDepth));
-            Mesh m = CreateBranchMesh(branch, r, info.Detail);
-            GameObject go = new GameObject("Branch " + i);
-            go.AddComponent<MeshFilter>();
-            go.AddComponent<MeshRenderer>();
-            go.GetComponent<MeshFilter>().mesh = m;
-            Renderer rend = go.GetComponent<Renderer>();
-            rend.material.color = info.Color;
-            go.transform.parent = parent.transform;
-            i++;
+            if (branch.Nodes.Count == 1)
+            {
+                TreeNode leafNode = branch.Nodes[0];
+                leafNode.GrowLeaf(leafNode.Position, branch.Order, info, growth.LeafParent);
+            }
+            else 
+            {
+                float r = branch.Radius * ((info.MaxDepth - branch.Order + 0.01f) / (info.MaxDepth));
+                Mesh m = CreateBranchMesh(branch, r, info.Detail);
+                GameObject go = new GameObject("Branch " + i);
+                go.AddComponent<MeshFilter>();
+                go.AddComponent<MeshRenderer>();
+                go.GetComponent<MeshFilter>().mesh = m;
+                Renderer rend = go.GetComponent<Renderer>();
+                rend.material.color = info.Color;
+                go.transform.parent = parent.transform;
+                i++;
+            }
         }
     }
 
@@ -137,7 +144,7 @@ public class TreeMeshUtils
             Vector3 v = Vector3.Cross(axis, u).normalized;
 
             float theta = 0.0f;
-            float r = (radius) * Mathf.Exp(-0.06f * b.Nodes[i].Depth); //* (l - i + 0.01f) / (l);
+            float r = (radius) * Mathf.Exp(-0.072f * b.Nodes[i].Depth);
 
             for (int d = 0; d < detail; d++)
             {

@@ -12,14 +12,12 @@ public class TreeNode
     int depth;
     public int Depth { get => depth; set => depth = value; }
 
-
     public TreeNode(Vector3 position, int depth) 
     {
         this.position = position;
         this.buds     = new List<TreeBud>();
         this.depth    = depth;  
     } 
-
 
     public TreeBud CreateSideBuds(TreeBud bud, TreeInfo info)
     {
@@ -73,12 +71,12 @@ public class TreeNode
 
     public void GrowLeaf(Vector3 pos, int order, TreeInfo info, GameObject parent)
     {
-        float rad = (info.StepSize * 4.0f) * ((info.MaxDepth + 0.5f - order) / info.MaxDepth);
+        float rad = (Mathf.Exp(-0.012f * this.Depth)) * (2.5f * info.StepSize) * ((info.MaxDepth + 0.01f - order) / info.MaxDepth);
         GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         temp.transform.position = pos;
         temp.transform.localScale = Vector3.one * rad;
         temp.transform.parent = parent.transform;
-        temp.GetComponent<Renderer>().material.color = Color.green;
+        temp.GetComponent<Renderer>().material.color = info.LeafColor;
     }
 
 }
