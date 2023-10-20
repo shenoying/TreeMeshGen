@@ -16,6 +16,8 @@ public class TreeMeshGen : MonoBehaviour
     public float orthoProb = 0.55f;
     public int detail = 8;
     public float height = 5.0f;
+    [Range(0.1f, 3.0f)]
+    public float thickness = 1.0f;
     public float stepSize = 1.5f;
     public int maxDepth = 7;
     [Range(0, 50)]
@@ -29,14 +31,14 @@ public class TreeMeshGen : MonoBehaviour
         Color color = TreeMeshUtils.GenerateRandomColor();
         ///TODO: add thickness param
         TreeInfo info = new TreeInfo (
-            dieProb, pauseProb, branchProb, orthoProb, height, detail, color, numSteps, maxDepth, stepSize, orthoProb
+            dieProb, pauseProb, branchProb, orthoProb, height, thickness, detail, color, numSteps, maxDepth, stepSize, orthoProb
         );
 
         GameObject world = new GameObject("Trees");
 
         for (int i = 0; i < 3; i++) 
         {
-            Vector3 l = new Vector3(i * 20.0f - 20.0f, 0.0f, 40.0f);
+            Vector3 l = new Vector3(i * 30.0f - 30.0f, 0.0f, 40.0f);
             CreateTree(l, world, info);
         }
     }
@@ -59,25 +61,24 @@ public class TreeMeshGen : MonoBehaviour
             0
         );
 
-        TreeNode trunkNode = new TreeNode(position);
-        TreeNode apicalNode = new TreeNode(new Vector3(position.x, h, position.z));
+        TreeNode trunkNode = new TreeNode(position, 0);
+        TreeNode apicalNode = new TreeNode(new Vector3(position.x, h, position.z), 1);
         
         apicalNode.Buds.Add(bud);
-        TreeBranch b = new TreeBranch(trunkNode);
+        TreeBranch b = new TreeBranch(trunkNode, 0, info.Thickness);
         b.Nodes.Add(apicalNode);
         
-        tg.Nodes.Add(trunkNode);
-        tg.Nodes.Add(apicalNode);
         tg.Branches.Add(b);
         tg.Internodes.Add(new TreeInternode(trunkNode, apicalNode, 1.00f));
 
         tg.Grow(info);
         growth.Add(tg);
 
-        TreeMeshUtils.RenderTree(tg, info, tree);
+        //TreeMeshUtils.RenderTree(tg, info, tree);
+        TreeMeshUtils.RenderTreeCR(tg, info, tree);
         //TreeMeshUtils.DebugTree(tg);
         
-        Debug.Log("Nodes: " + tg.Nodes.Count + ", Internodes: " + tg.Internodes.Count + ", Branches: " + tg.Branches.Count);
+        Debug.Log("Internodes: " + tg.Internodes.Count + ", Branches: " + tg.Branches.Count);
 
         info.Resample();
     }

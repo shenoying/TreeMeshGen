@@ -18,6 +18,8 @@ public class TreeInfo
 
     float height;
     public float Height { get => height; set => height = value; }
+    float thickness;
+    public float Thickness { get => thickness; set => thickness = value; }
     int detail;
     public int Detail { get => detail;}
     Color color;
@@ -31,13 +33,14 @@ public class TreeInfo
     bool branchesUp;
     public bool BranchesUp { get => branchesUp; }
     
-    public TreeInfo (float die, float pause, float branch, float ortho, float height, int detail, Color color, int numSteps, int maxDepth, float stepSize, float orthoProb)
+    public TreeInfo (float die, float pause, float branch, float ortho, float height, float thickness, int detail, Color color, int numSteps, int maxDepth, float stepSize, float orthoProb)
     {
         this.dieProb    = die;
         this.pauseProb  = pause;
         this.branchProb = branch;
         this.orthoProb  = ortho;
         this.height     = height;
+        this.thickness  = thickness;
         this.detail     = detail;
         this.color      = color;
         this.numSteps   = numSteps;

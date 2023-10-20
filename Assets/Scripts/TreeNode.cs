@@ -9,18 +9,21 @@ public class TreeNode
     public Vector3 Position { get => position; set => position = value; }
     List<TreeBud> buds;
     public List<TreeBud> Buds { get => buds; }
+    int depth;
+    public int Depth { get => depth; set => depth = value; }
 
 
-    public TreeNode(Vector3 position) 
+    public TreeNode(Vector3 position, int depth) 
     {
-        this.position   = position;
-        this.buds       = new List<TreeBud>();
+        this.position = position;
+        this.buds     = new List<TreeBud>();
+        this.depth    = depth;  
     } 
 
 
-    public void CreateSideBuds(TreeBud bud, TreeInfo info)
+    public TreeBud CreateSideBuds(TreeBud bud, TreeInfo info)
     {
-        if (bud.Order + 1 > info.MaxDepth) return;
+        if (bud.Order + 1 > info.MaxDepth) return null;
 
         Vector3 newT = (
                 (Quaternion.AngleAxis(Random.Range(-45.0f, 45.0f), bud.Binormal)) * 
@@ -30,7 +33,8 @@ public class TreeNode
         Vector3 newB = Vector3.Cross(newT, newN);
 
         TreeBud newBud = new TreeBud(newT, newN, newB, bud.Order + 1);
-        buds.Add(newBud);
+
+        return newBud;
     }
 
     public TreeInternode CreateInternode(TreeBud bud, TreeInfo info)
@@ -38,7 +42,7 @@ public class TreeNode
         float dT = (info.StepSize) * ((info.MaxDepth + 0.5f - bud.Order) / info.MaxDepth);
 
         Vector3 newPos = this.Position + bud.Tangent * dT;
-        TreeNode newNode = new TreeNode(newPos);
+        TreeNode newNode = new TreeNode(newPos, this.depth + 1);
 
         Vector3 newT;
         if (info.BranchesUp)
@@ -67,12 +71,13 @@ public class TreeNode
         return internode;
     }
 
-    public void GrowLeaf(Vector3 pos, int order, TreeInfo info)
+    public void GrowLeaf(Vector3 pos, int order, TreeInfo info, GameObject parent)
     {
         float rad = (info.StepSize * 4.0f) * ((info.MaxDepth + 0.5f - order) / info.MaxDepth);
         GameObject temp = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         temp.transform.position = pos;
         temp.transform.localScale = Vector3.one * rad;
+        temp.transform.parent = parent.transform;
         temp.GetComponent<Renderer>().material.color = Color.green;
     }
 
